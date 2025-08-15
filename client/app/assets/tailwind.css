@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@400;500;600&family=Poppins:wght@700&display=swap'); /* assets/tailwind.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html, body {
+        @apply text-gray-900;
+        background-color: #FAF8F4;
+        background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+    }
+    h1, h2, h3 {
+        @apply font-bold;
+        font-family: 'Poppins', sans-serif;
+    }
+}
+/* In tailwind.css, replace your existing @layer components */
+@layer components {
+    .container-narrow { @apply max-w-4xl mx-auto px-4; }
+
+    /* New card style with a deeper, softer shadow */
+    .card { @apply bg-white shadow-xl ring-1 ring-gray-900/5 rounded-2xl p-5; }
+
+    .btn { @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-semibold transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none; }
+
+    /* Primary button with the new accent color and a "lift" effect on hover */
+    .btn-primary {
+        @apply btn bg-amber-600 text-white shadow-md shadow-amber-600/20;
+        @apply hover:bg-amber-700 hover:-translate-y-0.5;
+        @apply active:bg-amber-800;
+    }
+
+    /* Secondary button with a more subtle hover effect */
+    .btn-secondary { @apply btn bg-white text-gray-900 ring-1 ring-inset ring-gray-200 hover:bg-gray-100 hover:ring-gray-300; }
+
+    .muted { @apply text-gray-500; }
+
+    /* New "underlined" input style */
+    .input {
+        @apply border-0 border-b-2 border-gray-200 bg-transparent px-1 py-2;
+        @apply focus:outline-none focus:ring-0 focus:border-amber-600;
+    }
+
+    .select { @apply rounded-xl ring-1 ring-inset ring-gray-200 px-3 py-2 bg-white; }
+}
+
+/* Apply these styles only on screens narrower than 640px */
+@media (max-width: 640px) {
+    .card.overflow-hidden {
+        /* Set a height relative to the viewport height */
+        height: 70vh;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card.overflow-hidden :deep(canvas) {
+        /* Override w-full and h-auto to scale by height instead */
+        width: auto;
+        height: 100%;
+        max-width: none;
+    }
+}
