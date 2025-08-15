@@ -1,0 +1,12 @@
+{
+  "name": "exquisite-corpse-monorepo",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "cd server && node server.js",
+    "install": "npm run build"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}

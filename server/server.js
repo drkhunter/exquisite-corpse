@@ -55,7 +55,7 @@ const rooms = new Map()
 const app = express()
 app.use(cors({ origin: ORIGIN }))
 app.use(express.json({ limit: '2mb' }))
-app.use(express.static(path.join(__dirname, '.output/public')));
+app.use(express.static(path.join(__dirname, '../client/.output/public')));
 
 const server = http.createServer(app)
 const io = new Server(server, { cors: { origin: ORIGIN, methods: ['GET','POST'] } })

@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss'],
     runtimeConfig: {
         public: {
-            SOCKET_SERVER: process.env.SOCKET_SERVER || 'http://localhost:3001'
+            SOCKET_SERVER: process.env.SOCKET_SERVER || 'https://your-app-name.onrender.com'
         }
     }
 })
