@@ -119,15 +119,6 @@ function forceSubmitAll(code) {
     }, 750);
 }
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/.output/public/index.html'));
-});
-
-
-server.listen(PORT, () => {
-    console.log(`Socket.IO server listening on http://localhost:${PORT}`)
-})
-
 // --- Health ---
 app.get('/health', (_req, res) => res.json({ ok: true }))
 
@@ -151,6 +142,10 @@ app.get('/rooms/:code/export.zip', (req, res) => {
     }
     archive.finalize()
 })
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/.output/public/index.html'));
+});
 
 // --- Sockets ---
 io.on('connection', (socket) => {
