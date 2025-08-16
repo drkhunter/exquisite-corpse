@@ -208,3 +208,33 @@ onBeforeUnmount(() => {
   c.removeEventListener('pointerleave', up)
 })
 </script>
+
+<style scoped>
+/* Apply these styles only on screens narrower than 640px */
+@media (max-width: 640px) {
+  .card.overflow-hidden {
+    /* Set a height relative to the viewport height to make the canvas tall */
+    height: 70vh;
+    /* This creates a positioning context for the canvas inside */
+    position: relative;
+  }
+
+  .card.overflow-hidden :deep(canvas) {
+    /* --- FIX FOR SCROLLING --- */
+    /* This prevents the browser from scrolling when you draw on the canvas */
+    touch-action: none;
+
+    /* --- FIX FOR LAYOUT --- */
+    /* This new positioning logic robustly centers and crops the canvas */
+    position: absolute;
+    height: 100%; /* Make the canvas as tall as the container */
+    width: auto;   /* Let the width scale to maintain the aspect ratio */
+    max-width: none; /* Allow it to be wider than the screen */
+
+    /* These lines perfectly center the canvas, cropping the sides */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+</style>
