@@ -6,6 +6,7 @@ import {nanoid} from 'nanoid'
 import archiver from 'archiver'
 import path from 'path';
 import {fileURLToPath} from 'url';
+import history from 'connect-history-api-fallback';
 
 // --- SETUP & CONFIG ---
 const __filename = fileURLToPath(import.meta.url);
@@ -119,7 +120,17 @@ function forceSubmitAll(code) {
 // --- MIDDLEWARE & ROUTES ---
 app.use(cors({origin: ORIGIN}));
 app.use(express.json({limit: '2mb'}));
-app.use(express.static(path.join(__dirname, '../client/.output/public')));
+
+// This serves static assets like CSS and JS from the build directory
+const staticFileMiddleware = express.static(path.join(__dirname, '../client/.output/public'));
+app.use(staticFileMiddleware);
+
+// Add the new history middleware. It will cleverly handle SPA routing.
+app.use(history());
+
+// Re-apply the static middleware after the history fallback
+// This is necessary to still serve files like .js and .css correctly
+app.use(staticFileMiddleware);
 
 // API Routes (must come before the catch-all)
 app.get('/health', (_req, res) => res.json({ok: true}));
@@ -151,12 +162,6 @@ app.get('/rooms/:code/export.zip', (req, res) => {
     }
     archive.finalize();
 });
-
-// SPA Catch-all Route (must be the last route)
-app.all('/{*any}', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/.output/public/index.html'));
-});
-
 
 // --- SOCKET.IO EVENT HANDLERS ---
 io.on('connection', (socket) => {

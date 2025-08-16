@@ -82,47 +82,67 @@ function drawStroke(ctx: CanvasRenderingContext2D, s: Stroke) {
 
 // render() is now our "full redraw" function, only used when necessary.
 function render() {
-  const c = cv.value; if (!c) return
-  c.width = props.width; c.height = props.segHeight
-  const ctx = c.getContext('2d')!
-  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height)
+  const c = cv.value; if (!c) return;
+
+  // --- NEW: High-Resolution Canvas Scaling ---
+  // Get the device's pixel ratio to determine the required resolution.
+  const dpr = window.devicePixelRatio || 1;
+
+  // Set the canvas's internal (drawing buffer) size to be the configured size,
+  // scaled up by the device pixel ratio.
+  c.width = props.width * dpr;
+  c.height = props.segHeight * dpr;
+
+  // We also need to scale the canvas's CSS size back down to fit the layout.
+  c.style.width = `${props.width}px`;
+  c.style.height = `${props.segHeight}px`;
+
+  const ctx = c.getContext('2d')!;
+  // Scale the drawing context. All drawing commands will now be automatically
+  // scaled up to match the high-resolution buffer.
+  ctx.scale(dpr, dpr);
+  // --- END NEW SECTION ---
+
+
+  // The rest of the render function remains exactly the same!
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, props.width, props.segHeight);
 
   if (props.showGuides) {
-    ctx.save()
+    ctx.save();
     ctx.strokeStyle = 'rgba(0,0,0,0.2)';
     ctx.setLineDash([6, 6]);
-    ctx.beginPath()
+    ctx.beginPath();
     if (!props.guideStrokes?.length) {
-      ctx.moveTo(0, 2); ctx.lineTo(c.width, 2)
+      ctx.moveTo(0, 2); ctx.lineTo(props.width, 2);
     }
     if (props.segmentIndex < props.totalSegments - 1) {
-      const bottomGuideY = c.height - GUIDE_REVEAL_HEIGHT;
+      const bottomGuideY = props.segHeight - GUIDE_REVEAL_HEIGHT;
       ctx.moveTo(0, bottomGuideY);
-      ctx.lineTo(c.width, bottomGuideY);
+      ctx.lineTo(props.width, bottomGuideY);
       ctx.stroke();
       ctx.fillStyle = 'rgba(0,0,0,0.3)';
       ctx.font = '12px "Inter", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
-      ctx.fillText('Cross this line', c.width / 2, bottomGuideY - 4);
+      ctx.fillText('Cross this line', props.width / 2, bottomGuideY - 4);
     } else {
       ctx.stroke();
     }
-    ctx.restore()
+    ctx.restore();
   }
 
   if (props.guideStrokes?.length) {
-    ctx.save()
-    ctx.strokeStyle = 'rgba(0,0,0,0.15)'
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
     for (const s of props.guideStrokes) {
-      const translatedStroke = { ...s, points: s.points.map(p => ({ x: p.x, y: p.y - props.segHeight + GUIDE_REVEAL_HEIGHT })) }
-      drawStroke(ctx, translatedStroke)
+      const translatedStroke = { ...s, points: s.points.map(p => ({ x: p.x, y: p.y - props.segHeight + GUIDE_REVEAL_HEIGHT })) };
+      drawStroke(ctx, translatedStroke);
     }
-    ctx.restore()
+    ctx.restore();
   }
 
-  ctx.strokeStyle = '#111'
-  for (const s of strokes.value) drawStroke(ctx, s)
+  ctx.strokeStyle = '#111';
+  for (const s of strokes.value) drawStroke(ctx, s);
 }
 
 //--- User Input Functions ---
