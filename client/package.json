@@ -3,11 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "build": "nuxt generate",
+    "dev": "nuxt dev"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.2",
