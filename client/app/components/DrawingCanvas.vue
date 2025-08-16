@@ -80,31 +80,20 @@ function drawStroke(ctx: CanvasRenderingContext2D, s: Stroke) {
   ctx.stroke();
 }
 
-// render() is now our "full redraw" function, only used when necessary.
 function render() {
   const c = cv.value; if (!c) return;
 
-  // --- NEW: High-Resolution Canvas Scaling ---
-  // Get the device's pixel ratio to determine the required resolution.
   const dpr = window.devicePixelRatio || 1;
-
-  // Set the canvas's internal (drawing buffer) size to be the configured size,
-  // scaled up by the device pixel ratio.
   c.width = props.width * dpr;
   c.height = props.segHeight * dpr;
 
-  // We also need to scale the canvas's CSS size back down to fit the layout.
-  c.style.width = `${props.width}px`;
-  c.style.height = `${props.segHeight}px`;
+  // The two lines that set c.style.width and c.style.height have been REMOVED.
+  // This allows the mobile CSS to control the canvas size correctly.
 
   const ctx = c.getContext('2d')!;
-  // Scale the drawing context. All drawing commands will now be automatically
-  // scaled up to match the high-resolution buffer.
   ctx.scale(dpr, dpr);
-  // --- END NEW SECTION ---
 
-
-  // The rest of the render function remains exactly the same!
+  // The rest of the render function is unchanged
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, props.width, props.segHeight);
 
   if (props.showGuides) {
@@ -148,10 +137,17 @@ function render() {
 //--- User Input Functions ---
 
 function getPos(e: PointerEvent) {
-  const rect = cv.value!.getBoundingClientRect()
-  const x = (e.clientX - rect.left) * (cv.value!.width / rect.width)
-  const y = (e.clientY - rect.top) * (cv.value!.height / rect.height)
-  return { x: Math.max(0, Math.min(props.width, x)), y: Math.max(0, Math.min(props.segHeight, y)) }
+  const rect = cv.value!.getBoundingClientRect();
+
+  // This correctly scales the touch coordinates from the on-screen element size
+  // to the canvas's logical drawing size (e.g., 600x900).
+  const x = (e.clientX - rect.left) * (props.width / rect.width);
+  const y = (e.clientY - rect.top) * (props.segHeight / rect.height);
+
+  return {
+    x: Math.max(0, Math.min(props.width, x)),
+    y: Math.max(0, Math.min(props.segHeight, y))
+  };
 }
 
 function down(e: PointerEvent) {
