@@ -153,7 +153,7 @@ app.get('/rooms/:code/export.zip', (req, res) => {
 });
 
 // SPA Catch-all Route (must be the last route)
-app.get('*', (req, res) => {
+app.all('/{*any}', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/.output/public/index.html'));
 });
 
