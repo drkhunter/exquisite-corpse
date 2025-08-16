@@ -166,7 +166,7 @@ io.on('connection', (socket) => {
     socket.data.playerId = null
 
     socket.on('room:create', ({player, settings}) => {
-        const code = nanoid(5).replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 5)
+        const code = nanoid(10).replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 5)
         const hostId = player?.id || nanoid(8)
         const hostName = player?.name || 'Host'
         const room = newRoom(code, hostId, hostName, settings || DEFAULT_SETTINGS)

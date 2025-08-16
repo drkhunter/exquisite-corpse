@@ -11,6 +11,9 @@ export default defineNuxtConfig({
     },
     css: ['@/assets/tailwind.css'],
     modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss'],
+    routeRules: {
+        '/room/**': { ssr: false }
+    },
     runtimeConfig: {
         public: {
             SOCKET_SERVER: process.env.SOCKET_SERVER || 'https://exquisite-corpse-do6o.onrender.com'
